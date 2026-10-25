@@ -1,0 +1,176 @@
+//Large Program 02 - Secret Codes
+
+//Creating input variabe and splitting the array
+let input = await readLineAsync("Enter the commands:")
+let splitInput = input.split("/");
+let message = splitInput[splitInput.length - 1];
+let splitMessage = message.split("");
+
+
+//Creating variables for argument extraction
+let commands = [];
+let index;
+let index2;
+let index3;
+let index4;
+let argument;
+let argument2;
+let argument3;
+let argument4;
+
+//For loop and if statement to extract the arguments and then call the functions 
+for(let i = 0;i < (splitInput.length - 1);i++) {
+    commands[i] = splitInput[i];
+    
+    if(commands[i].startsWith("LS")) {
+        index = parseInt(commands[i].indexOf("-")) + 1;
+        argument = parseInt(commands[i].charAt(index));
+        message = leftShift(message,argument);
+
+    }
+    else if(commands[i].startsWith("RS")) {
+        index = parseInt(commands[i].indexOf("-")) + 1;
+        argument = parseInt(commands[i].charAt(index));
+        message = rightShift(message,argument);
+    }
+     else if(commands[i].startsWith("LC")) {
+        index = parseInt(commands[i].indexOf("-")) + 1;
+        argument = parseInt(commands[i].charAt(index));
+        message = leftCirculate(message,argument);
+    }
+     else if(commands[i].startsWith("RC")) {
+        index = parseInt(commands[i].indexOf("-")) + 1;
+        argument = parseInt(commands[i].charAt(index));
+        message = rightCirculate(message,argument);
+    }
+    else if(commands[i].startsWith("REV")) {
+        index = parseInt(commands[i].indexOf("-")) + 1;
+        index2 = parseInt(commands[i].indexOf("-")) + 2;
+        argument = parseInt(commands[i].charAt(index));
+        argument2 = parseInt(commands[i].charAt(index2));
+        message = reverse(message,argument,argument2);
+    }
+    else if(commands[i].startsWith("MC")) {
+        index = parseInt(commands[i].indexOf("-")) + 1;
+        index2 = parseInt(commands[i].indexOf("-")) + 2;
+        index3 = parseInt(commands[i].indexOf("-")) + 3;
+        index4 = commands[i].indexOf("-") + 4;
+        argument = parseInt(commands[i].charAt(index));
+        argument2 = parseInt(commands[i].charAt(index2));
+        argument3 = parseInt(commands[i].charAt(index3));
+        argument4 = commands[i].charAt(index4);
+        message = MC(message,argument,argument2,argument3,argument4);
+    }
+    
+}
+
+//Print the results to the console
+console.log(`The encrypted version is:${message}`)
+
+//Create a function for each command
+function leftShift (leftShiftMessage,num) {
+    let arr = Array.from(leftShiftMessage);    
+    
+    for(let i = 0;i < num;i++){
+        arr.shift();
+        arr.push("#");
+    }
+    
+    return arr.join("");
+}
+
+function rightShift(rightShiftMessage,num) {
+    let arr = Array.from(rightShiftMessage); 
+    
+    for(let i = 0;i<num;i++) {
+        arr.pop();
+        arr.unshift("#");
+    }
+    
+    return arr.join("");
+}
+
+function leftCirculate(leftCirculateMessage,num) {
+    if(typeof leftCirculateMessage == "string") {
+        leftCirculateMessage = Array.from(leftCirculateMessage)
+    }
+    
+    let segment = leftCirculateMessage.slice(0,num);
+    
+    for(let i = leftCirculateMessage.length - 1;i >= 0;i--) {
+        if(leftCirculateMessage[i] == segment[i]) {
+            leftCirculateMessage.splice(i,1);
+        }
+    }
+    
+    splitMessage = leftCirculateMessage.concat(segment);
+    splitMessage = splitMessage.toString();
+    splitMessage = splitMessage.replaceAll(",","");
+    return splitMessage;
+}
+
+
+function rightCirculate(rightCirculateMessage, num) {
+    if(typeof rightCirculateMessage == "string") {
+        rightCirculateMessage = Array.from(rightCirculateMessage)
+    }
+    
+    let segment = rightCirculateMessage.slice(rightCirculateMessage.length - num);
+    
+    let segmentIndex = segment.length-1;
+    for(let i = rightCirculateMessage.length - 1;i >= 0;i--) {
+        if(rightCirculateMessage[i] == segment[segmentIndex]) {
+            rightCirculateMessage.splice(i,1);
+        }
+        segmentIndex--;
+    }
+    
+    splitMessage = segment.concat(rightCirculateMessage);
+    splitMessage = splitMessage.toString();
+    splitMessage = splitMessage.replaceAll(",","");
+    return (splitMessage);
+}    
+
+function reverse(reverseMessage, start, length) {
+    if(typeof reverseMessage == "string") {
+        reverseMessage = Array.from(reverseMessage);
+        
+    }
+
+    let firstSegment = reverseMessage.slice(0, start - 1);
+    let segment = reverseMessage.slice(start - 1, start + length - 1);
+    segment = segment.reverse()
+    let endSegment = reverseMessage.slice(start + length - 1);
+    let result = firstSegment.concat(segment,endSegment);
+    result = result.join("")
+    splitMessage = result;
+    
+    return splitMessage;
+}
+
+function MC(circulateMessage, position, length, numCharacters, direction) {
+    
+    if(typeof circulateMessage == "string") {
+        circulateMessage = Array.from(circulateMessage);
+    } 
+    
+    let firstSegment = circulateMessage.slice(0, position - 1);
+    let segment = circulateMessage.slice(position -1, position -1 + length);
+    let endSegment = circulateMessage.slice(position -1 + length);
+
+if (direction == "R") {
+    for (let i = 0; i < numCharacters; i++) {
+        segment.unshift(segment.pop());
+    }
+}
+else if (direction == "L") {
+    for (let i = 0; i < numCharacters; i++) {
+        segment.push(segment.shift());
+    }
+}
+    
+    let result = firstSegment.concat(segment,endSegment);
+    result = result.join("");
+    splitMessage = result;
+    return splitMessage;
+}
